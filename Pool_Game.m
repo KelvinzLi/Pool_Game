@@ -12,7 +12,7 @@ function Pool_Game()
         % if no ball is in motion
         if sum(MotionTracker) == 0
             % if player isn't allowed to freely place ball
-            if ~toPlaceBall    
+            if ~toPlaceBall
                 pos = get_mouse_pos();
                 if (norm(pos - pos_array(1, :)) <= ball_r)
                     isDragging = true;
@@ -128,6 +128,8 @@ function Pool_Game()
         enter_hole_tracker = zeros(ball_count, 1);
 
         MotionTracker = zeros(ball_count, 1);
+
+        toPlaceBall = false;
 
         % calculating intial ball positions
         id = 1;
@@ -739,6 +741,8 @@ function Pool_Game()
         "3. your cue ball collide with the other player's ball first after shooting (this is after you're assigned a color" + newline + newline + ...
         "In the case of a foul, the other player is allowed to freely place a ball behind the white line, " + newline + ...
         "So try not to make a foul" + newline + newline + ...
+        "Press R to restart the game" + newline+ ...
+        "Press H to turn the auxiliary lines on or off" + newline + newline + ...
         "Now, please enter your names!")
 
     player_names(1) = input("Please enter the name of player 1: ", 's');
@@ -759,6 +763,9 @@ function Pool_Game()
     set(gca,'xtick',[],'ytick', []);
 
     hold on
+
+    set(f, 'MenuBar', 'none');
+    set(f, 'ToolBar', 'none');
 
     set(f, 'WindowButtonDownFcn', @OnMouseDown)
     set(f, 'WindowButtonUpFcn', @OnMouseUp)
@@ -793,7 +800,7 @@ function Pool_Game()
                 add_ball_plot(id);
             end
 
-            if sum(v_array(on_table_id)) == 0
+            if sum(speed_array(on_table_id)) == 0
                 MotionTracker = zeros(ball_count, 1);
             end
 

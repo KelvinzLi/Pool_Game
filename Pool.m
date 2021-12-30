@@ -678,7 +678,7 @@ function Pool()
                 add_ball_plot(id);
             end
 
-            if sum(v_array(on_table_id)) == 0
+            if sum(speed_array(on_table_id)) == 0
                 MotionTracker = zeros(ball_count, 1);
             end
 
