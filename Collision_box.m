@@ -124,6 +124,7 @@ function Collision_box()
             end
 
             if flag == 0
+                collision_ball_array(update_id) = 0;
                 if speed_array(update_id) > 0
                     [wall_id, d] = wall_collision_detection(pos_array(update_id, :), v_array(update_id, :), ball_r, walls);
     
@@ -336,7 +337,8 @@ function Collision_box()
             ball_patch = patch(ball_plot_x, ball_plot_y, color_array, 'EdgeColor', "none");
         end
 
-        if sum(v_array) == 0
+
+        if sum(speed_array) <= 1e-5
             MotionTracker = zeros(ball_count, 1);
         end
 
