@@ -64,6 +64,7 @@ function Collision_box()
 
     function CollisionManager(update_array)
         test_ids = 1: ball_count;
+        next_update_array = [];
 
         for update_id = update_array
             test_ids = test_ids(test_ids ~= update_id);
@@ -94,6 +95,20 @@ function Collision_box()
 
                         speed_next_array(update_id) = s1;
                         speed_next_array(ball_id) = s2;
+
+                        if collision_ball_array(ball_id) ~= 0
+                            next_update_id = collision_ball_array(ball_id);
+                            if sum(update_array == next_update_id) == 0
+                                time_array(next_update_id) = nan;
+                                v_next_array(next_update_id, :) = [0, 0];
+                                speed_next_array(next_update_id) = 0;
+    
+                                next_update_array = [next_update_array, next_update_id];
+                            end
+                        end
+
+                        collision_ball_array(update_id) = ball_id;
+                        collision_ball_array(ball_id) = update_id;
 
                         if s1 > 0
                             MotionTracker(update_id) = 1;
@@ -139,17 +154,16 @@ function Collision_box()
                         else
                             normal = [0 1];
                         end
-
-%                         disp(string(update_id) + " will collide with wall")
-%         
+ 
                         collision_speed = speed_array(update_id) - acc * t;
                         [v_next_array(update_id, :), speed_next_array(update_id)] = wall_collision(v_array(update_id, :), collision_speed, normal, restitute_coef, tangent_coef);
                     end
                 end
             end
         end
-
-        close_collision_record = max(0, close_collision_record - 0.04);
+        if ~isempty(next_update_array)
+            CollisionManager(next_update_array)
+        end
     end
 
     function update_balls(t)
@@ -176,7 +190,6 @@ function Collision_box()
                         time_array(id) = time_array(id) - t;
                     end
                 else
-%                     disp(string(id) + " has undergone collision")
 
                     now_d_before = calc_d(speed_array(id), acc, time_array(id));
                     now_d_after = calc_d(speed_next_array(id), acc, t - time_array(id));
@@ -250,6 +263,8 @@ function Collision_box()
     dist_array = zeros(ball_count, 1);
     time_array = nan(ball_count, 1);
 
+    collision_ball_array = zeros(ball_count, 1);
+
     pos_array(1, :) = [1.5 * y_length, 0.5 * y_length];
 
     id = 1;
@@ -308,10 +323,6 @@ function Collision_box()
                 [min_time, ~] = min(time_array);
                 update_balls(min_time);
 
-                if break_flag == 1
-                    break
-                end
-
                 time_left = time_left - min_time;
             end
 
@@ -321,12 +332,12 @@ function Collision_box()
                 add_ball_plot(id);
             end
 
-            if break_flag == 1
-                break
-            end
-
             delete(ball_patch)
             ball_patch = patch(ball_plot_x, ball_plot_y, color_array, 'EdgeColor', "none");
+        end
+
+        if sum(v_array) == 0
+            MotionTracker = zeros(ball_count, 1);
         end
 
         elapsed = toc;

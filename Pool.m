@@ -35,9 +35,6 @@ function Pool()
             isDragging = false;
             MotionTracker(1) = 1;
             CollisionManager([1]);
-% 
-%             stroke_ball_id = find(time_array >= 0);
-%             stroke_ball_id = stroke_ball_id(2);
         end
     end
 
@@ -111,6 +108,8 @@ function Pool()
         
         dist_array = zeros(ball_count, 1);
         time_array = nan(ball_count, 1);
+
+        collision_ball_array = zeros(ball_count, 1);
 
         pos_array(1, :) = ball_cue_pos;
 
@@ -336,11 +335,12 @@ function Pool()
         end
     end
 
-    function flag = BallCollisionManager(update_id, test_ids, bound_d_array)
+    function [flag, collision_id] = BallCollisionManager(update_id, test_ids, bound_d_array)
         [now_dists, now_times] = ball_collision_detection(update_id, test_ids, pos_array, v_array, speed_array, acc, ball_r, walls, false);
         [sort_time, sort_id] = sort(now_times);
 
         flag = false;
+        collision_ball = 0;
         if ~isnan(sort_time(1))
             for count = 1: ball_count
                 ball_id = sort_id(count);
@@ -382,6 +382,7 @@ function Pool()
                         end
     
                         flag = true;
+                        collision_id = ball_id;
                         break
                     end
                 end
@@ -390,6 +391,7 @@ function Pool()
     end
 
     function CollisionManager(update_array)
+        next_update_array = [];
         test_ids = on_table_id;
         bound_d_array = nan(ball_count, 1);
         normal_array = nan(ball_count, 2);
@@ -400,13 +402,26 @@ function Pool()
             end
         end
 
-
-
         for update_id = update_array
             test_ids = test_ids(test_ids ~= update_id);
 
-            flag = BallCollisionManager(update_id, test_ids, bound_d_array);
-            if ~flag
+            [flag, collision_id] = BallCollisionManager(update_id, test_ids, bound_d_array);
+            if flag
+                if collision_ball_array(collision_id) ~= 0
+                    next_update_id = collision_ball_array(collision_id);
+                    if sum(update_id == next_update_id) == 0
+                        time_array(next_update_id) = nan;
+                        v_next_array(next_update_id, :) = [0, 0];
+                        speed_next_array(next_update_id) = 0;
+    
+                        next_update_array = [next_update_array, next_update_id];
+                    end
+                end
+
+                collision_ball_array(update_id) = collision_id;
+                collision_ball_array(collision_id) = update_id;
+            else
+                collision_ball_array(update_id) = 0;
                 if speed_array(update_id) > 0
                     bound_d = bound_d_array(update_id);
                     normal = normal_array(update_id, :);
@@ -443,6 +458,9 @@ function Pool()
                     end
                 end
             end
+        end
+        if ~isempty(next_update_array)
+            CollisionManager(next_update_array)
         end
     end
 
@@ -591,6 +609,8 @@ function Pool()
     
     dist_array = zeros(ball_count, 1);
     time_array = nan(ball_count, 1);
+
+    collision_ball_array = zeros(ball_count, 1);
 
     ball_patch = gobjects(ball_count, 1);
 
