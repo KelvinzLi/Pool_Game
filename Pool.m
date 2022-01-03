@@ -596,7 +596,7 @@ function Pool()
 
     set(gca,'xtick',[],'ytick', []);
 
-    xlabel("Hi")
+    xlabel("Showtime!")
 
     hold on
 
@@ -660,6 +660,9 @@ function Pool()
     init_setup();
 
     disp("Ready to go!")
+    disp("Press R to restart the game / resume initial setup" + newline + ...
+        "Press P and click to place the cue ball at the position you want"  + newline + ...
+        "Press H to turn the auxiliary lines on or off")
 
     max_time = 0;
     while isRunning
