@@ -340,7 +340,7 @@ function Pool()
         [sort_time, sort_id] = sort(now_times);
 
         flag = false;
-        collision_ball = 0;
+        collision_id = 0;
         if ~isnan(sort_time(1))
             for count = 1: ball_count
                 ball_id = sort_id(count);
