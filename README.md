@@ -1,6 +1,8 @@
 # Pool Game
 a game based on 2D collision simulation with Matlab
 
+[![Open in MATLAB Online](https://www.mathworks.com/images/responsive/global/open-in-matlab-online.svg)](https://matlab.mathworks.com/open/github/v1?repo=KelvinzLi/Pool_Game&file=Pool.m)
+
 <p align="center">
   <img src = "GamePlayClips.gif" width=50% height=50%/>
 </p>
