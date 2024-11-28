@@ -1,6 +1,8 @@
 # Pool Game
 a game based on 2D collision simulation with Matlab
 
+**Click on the icon below to launch it in MatLab Online!** (enter Pool_Game in the command line if game didn't start)
+
 [![Open in MATLAB Online](https://www.mathworks.com/images/responsive/global/open-in-matlab-online.svg)](https://matlab.mathworks.com/open/github/v1?repo=KelvinzLi/Pool_Game&file=Pool.m)
 
 <p align="center">
