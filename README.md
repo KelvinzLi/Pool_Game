@@ -2,7 +2,7 @@
 a game based on 2D collision simulation with Matlab
 
 <p align="center">
-  <img src = "GamePlayClips.gif" width=50% height=50%/>
+  <img src = "GamePlayClips.gif" width=100% height=100%/>
 </p>
 
 
